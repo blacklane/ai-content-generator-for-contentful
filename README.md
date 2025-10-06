@@ -97,12 +97,6 @@ CONTENTFUL_SPACE_ID=your_contentful_space_id_here
 CONTENTFUL_ENVIRONMENT_ID=alex-suprun-dev-new 
 CONTENTFUL_MANAGEMENT_TOKEN=CFPAT-your_management_api_token_here
 
-# Server Configuration
-FRONTEND_PORT=8000
-BACKEND_PORT=8001
-HOST=0.0.0.0
-NODE_ENV=development
-
 # Authentication
 AUTH_USERNAME=admin
 AUTH_PASSWORD=your_secure_password_here

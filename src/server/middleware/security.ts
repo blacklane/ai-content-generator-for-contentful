@@ -251,6 +251,6 @@ function getClientIp(req: Request): string {
     return cfConnectingIp;
   }
 
-  // Fallback to connection remote address
-  return req.connection.remoteAddress || req.socket.remoteAddress || 'unknown';
+  // Fallback to socket remote address
+  return req.socket.remoteAddress || 'unknown';
 }

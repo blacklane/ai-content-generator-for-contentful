@@ -83,7 +83,7 @@ const createJSONContent = (content: string): HTMLElement => {
 
   const jsonPre = document.createElement('pre');
   jsonPre.className =
-    'text-sm text-cursor-text whitespace-pre-wrap break-words overflow-auto scrollbar-hide max-h-96';
+    'text-sm text-cursor-text whitespace-pre-wrap break-words overflow-y-auto scrollbar-hide max-h-96 block';
   jsonPre.textContent = JSON.stringify(content, null, 2);
 
   container.appendChild(jsonPre);

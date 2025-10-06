@@ -92,8 +92,7 @@ router.post('/verify', (req: Request, res: Response) => {
       message: 'Token is valid',
       data: {
         username: decoded.username,
-        userId: decoded.userId,
-        issuedAt: decoded.iat * 1000, // Convert to milliseconds
+        issuedAt: decoded.iat ? decoded.iat * 1000 : undefined, // Convert to milliseconds
       },
     });
   } catch (error) {
