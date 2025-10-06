@@ -13,14 +13,6 @@ export interface FormData {
   language?: string;
 }
 
-function validateMinWords(value: string, minWords: number): boolean {
-  const words = value
-    .trim()
-    .split(/\s+/)
-    .filter(word => word.length > 0);
-  return words.length >= minWords;
-}
-
 function validateKeywords(value: string): boolean {
   // Split by comma and trim each keyword
   const keywords = value

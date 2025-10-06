@@ -118,7 +118,7 @@ export const getFallbackSchemas = (
           ],
         });
         break;
-      case 'seoText':
+      case 'seoText': {
         // Always generate exactly 3 seoText components with alternating image positions
         const imagePositions = ['left', 'right', 'left']; // Checkerboard pattern
         for (let i = 0; i < 3; i++) {
@@ -132,6 +132,7 @@ export const getFallbackSchemas = (
           });
         }
         break;
+      }
       default:
         fallbackSchemas.push({
           type,

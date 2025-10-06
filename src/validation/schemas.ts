@@ -1,14 +1,6 @@
 import { z } from 'zod';
 
 // Helper functions for custom validations
-const minWordsValidator = (minWords: number) => (value: string) => {
-  const words = value
-    .trim()
-    .split(/\s+/)
-    .filter(word => word.length > 0);
-  return words.length >= minWords;
-};
-
 const keywordsValidator = (value: string) => {
   // Split by comma and trim each keyword
   const keywords = value
