@@ -1,0 +1,45 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@4.0
+  aws-s3: circleci/aws-s3@4.0
+
+executors:
+  node-base:
+    docker:
+      - image: 'public.ecr.aws/cypress-io/cypress/browsers:node-22.17.1-chrome-138.0.7204.157-1-ff-140.0.4-edge-138.0.3351.83-1'
+
+commands:
+  install-pnpm:
+    steps:
+      - run:
+          name: Install tools
+          command: apt update && apt install curl openssh-client git -y
+      - run:
+          name: install pnpm
+          command: npm install --global pnpm@9.2.0
+
+jobs:
+  compile_zip_and_publish_lambda:
+    executor: node-base
+    steps:
+      - install-pnpm
+      - checkout
+      - aws-cli/setup:
+          role_arn: $CIRCLECI_OIDC_ROLE
+      - run: apt-get install zip
+      - run: echo 'export DEPLOY_HASH=${CIRCLE_SHA1:0:7}' >> "$BASH_ENV";
+      - run: bash deploy-lambda.sh
+
+workflows:
+  ai-generator:
+    jobs:
+      - compile_zip_and_publish_lambda:
+          name: deploy-ai-generator
+          context:
+            - infra-public
+            - ai-generator-testing
+          # filters:
+          #   branches:
+          #     only:
+          #       - main
