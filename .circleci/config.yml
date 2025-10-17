@@ -37,9 +37,9 @@ workflows:
       - compile_zip_and_publish_lambda:
           name: deploy-ai-generator
           context:
-            - infra-public
-            - ai-generator-testing
-          # filters:
-          #   branches:
-          #     only:
-          #       - main
+            - infra-public-testing
+            - ai-generator
+          filters:
+            branches:
+              only:
+                - main
