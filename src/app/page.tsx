@@ -156,6 +156,8 @@ export default function Home() {
   const handleGenerateContent = async () => {
     setLoading(true);
     setCurrentStep(3);
+    // Clear previous release title to allow auto-fill with new content
+    setReleaseTitle('');
 
     try {
       const response = await axios.post(
@@ -341,7 +343,23 @@ export default function Home() {
               generatedContent={generatedContent}
               loading={loading}
               onBack={() => setCurrentStep(2)}
-              onNext={() => setCurrentStep(4)}
+              onNext={() => {
+                // Auto-fill deployment title from generated content
+                if (generatedContent) {
+                  // Try to extract metaTitle from various possible locations
+                  const metaTitle = 
+                    generatedContent.metaTitle || 
+                    generatedContent.metadata?.metaTitle ||
+                    generatedContent.hero?.heading ||
+                    generatedContent.seoText?.title ||
+                    projectData.mainKeywords;
+                  
+                  if (metaTitle && !releaseTitle) {
+                    setReleaseTitle(metaTitle);
+                  }
+                }
+                setCurrentStep(4);
+              }}
             />
           )}
 
