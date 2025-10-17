@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Force dark theme */
+html {
+  background: #0f0f0f;
+}
+
+body {
+  color: #e4e4e7;
+  background: #0f0f0f;
+}
+
+/* Custom cursor gradient styles */
+.cursor-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+}
+
+.cursor-glow {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+}
+
+/* Card styles */
+.cursor-card {
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
+}
+
+/* Step indicator active state */
+.step-active {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+}
+
+/* Component card hover */
+.component-card {
+  transition: all 0.2s;
+}
+
+.component-card:hover {
+  transform: translateY(-2px);
+}
+
+.component-selected {
+  border-color: #8b5cf6 !important;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+/* Modal styles */
+.modal-box {
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+}
+
+/* Code block styling */
+.mockup-code {
+  background: #0f0f0f;
+  border: 1px solid #2a2a2a;
+}
+
+/* Alert styles */
+.alert {
+  border: 1px solid #2a2a2a;
+}
+
+.alert-error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+/* Input focus styles */
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border-color: #8b5cf6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+/* Button disabled state */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading animation */
+.loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
