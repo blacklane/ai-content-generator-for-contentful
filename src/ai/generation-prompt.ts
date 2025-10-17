@@ -38,7 +38,11 @@ export const BLACKLANE_CONTENT_GENERATION_PROMPT = (
 
 Main keywords: ${mainKeywords}
 Secondary keyword: ${secondaryKeywords || 'Not provided'}
-Questions: ${questions ? `${questions} (These will be prioritized in FAQ generation)` : 'Not provided (FAQ questions will be AI-generated based on keywords)'}
+Questions: ${
+    questions
+      ? `${questions} (These will be prioritized in FAQ generation)`
+      : 'Not provided (FAQ questions will be AI-generated based on keywords)'
+  }
 Language: ${language}
 Content types needed: ${contentTypes.join(', ')}${contextInfo}
 
@@ -49,9 +53,30 @@ CRITICAL LINK REQUIREMENTS:
 - ABSOLUTELY NO DUPLICATE LINKS - each URL can only be used ONCE across all content
 - If you need to reference the same service/location again, use different anchor text but DO NOT repeat the same URL
 
-Focus on URLs that match the language (${language}) and are relevant to the main keyword "${mainKeywords}". Look for:
-- City pages: /${language}/cities-[city-name]/ 
-- Airport transfer pages: /${language}/airport-transfer-[city]/
+Focus on URLs that match the language (${language}) and are relevant to the main keyword "${mainKeywords}". 
+
+LANGUAGE-SPECIFIC URL PATTERNS:
+Based on the language code "${language}", use these localized URL patterns:
+
+German (de):
+- City pages: /de/staedte-[city-name]/
+- Limousine service: /de/limousinenservice-[location]/
+- Chauffeur service: /de/chauffeurservice-[location]/
+- Airport transfers: /de/flughafentransfer-[city]/
+
+French (fr):
+- City pages: /fr/villes-[city-name]/
+- Limousine service: /fr/service-vtc-[location]/
+- Chauffeur service: /fr/chauffeur-prive-[location]/
+- Airport transfers: /fr/transfert-aeroport-[city]/
+
+English (en) and Spanish (es):
+- City pages: /${language}/cities-[city-name]/
+- Limousine service: /${language}/limousine-service-[location]/
+- Chauffeur service: /${language}/chauffeur-service-[location]/
+- Airport transfers: /${language}/airport-transfer-[city]/
+
+Always use the correct localized URL pattern that matches the content language "${language}"
 
 Example of proper link formatting:
 
@@ -101,7 +126,11 @@ Requirements:
 - Make content relevant to the main keywords: "${mainKeywords}"
 - Use provided main keywords: "${mainKeywords}"
 - Use provided secondary keywords: "${secondaryKeywords || 'None provided'}"
-- For FAQ generation: ${questions ? `PRIORITIZE these provided questions: "${questions}". Use these as your primary FAQ questions, then supplement with additional AI-generated questions if needed to reach 5-6 total questions.` : 'No specific questions provided - generate 5-6 relevant FAQ questions based on the main keywords and topic.'}
+- For FAQ generation: ${
+    questions
+      ? `PRIORITIZE these provided questions: "${questions}". Use these as your primary FAQ questions, then supplement with additional AI-generated questions if needed to reach 5-6 total questions.`
+      : 'No specific questions provided - generate 5-6 relevant FAQ questions based on the main keywords and topic.'
+  }
 - Return only valid JSON object
 - Use ${language} language for all content
 - In metadata.internalLinksUsed, list all internal links you included`;

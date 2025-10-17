@@ -3,7 +3,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Contentful AI Page Generator',
-  description: 'Professional web application for AI-powered content generation and Contentful CMS publishing',
+  description:
+    'Professional web application for AI-powered content generation and Contentful CMS publishing',
 };
 
 export default function RootLayout({
@@ -17,4 +18,3 @@ export default function RootLayout({
     </html>
   );
 }
-

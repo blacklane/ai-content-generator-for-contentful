@@ -13,7 +13,11 @@ interface StepOneProps {
   onNext: () => void;
 }
 
-export default function StepOne({ projectData, onUpdate, onNext }: StepOneProps) {
+export default function StepOne({
+  projectData,
+  onUpdate,
+  onNext,
+}: StepOneProps) {
   const isValid =
     projectData.mainKeywords.trim().length > 0 &&
     projectData.secondaryKeywords.trim().length > 0;
@@ -41,7 +45,7 @@ export default function StepOne({ projectData, onUpdate, onNext }: StepOneProps)
           </label>
           <textarea
             value={projectData.mainKeywords}
-            onChange={(e) => onUpdate({ mainKeywords: e.target.value })}
+            onChange={e => onUpdate({ mainKeywords: e.target.value })}
             placeholder="e.g., Premium Airport Transfer Service"
             className="textarea textarea-bordered w-full h-24 resize-none"
           />
@@ -56,7 +60,7 @@ export default function StepOne({ projectData, onUpdate, onNext }: StepOneProps)
           </label>
           <textarea
             value={projectData.secondaryKeywords}
-            onChange={(e) => onUpdate({ secondaryKeywords: e.target.value })}
+            onChange={e => onUpdate({ secondaryKeywords: e.target.value })}
             placeholder="e.g., luxury, professional, reliable transport"
             className="textarea textarea-bordered w-full h-20 resize-none"
           />
@@ -71,7 +75,7 @@ export default function StepOne({ projectData, onUpdate, onNext }: StepOneProps)
           </label>
           <textarea
             value={projectData.questions}
-            onChange={(e) => onUpdate({ questions: e.target.value })}
+            onChange={e => onUpdate({ questions: e.target.value })}
             placeholder="Questions to address in the content"
             className="textarea textarea-bordered w-full h-24 resize-none"
           />
@@ -83,7 +87,7 @@ export default function StepOne({ projectData, onUpdate, onNext }: StepOneProps)
           </label>
           <select
             value={projectData.language}
-            onChange={(e) => onUpdate({ language: e.target.value })}
+            onChange={e => onUpdate({ language: e.target.value })}
             className="select select-bordered w-full"
           >
             <option value="en">🇺🇸 English</option>
@@ -101,12 +105,21 @@ export default function StepOne({ projectData, onUpdate, onNext }: StepOneProps)
           className="btn bg-cursor-accent hover:bg-cursor-accent/80 text-white disabled:opacity-50"
         >
           Next: Choose Components
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </button>
       </div>
     </div>
   );
 }
-

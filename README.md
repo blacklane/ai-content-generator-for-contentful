@@ -1,6 +1,4 @@
-# Contentful AI Page Generator - Next.js
-
-Professional web application for AI-powered content generation and Contentful CMS publishing. Built with **Next.js 14**, **TypeScript**, **React**, and **Tailwind CSS**.
+# Blacklane's Contentful AI Page Generator
 
 ## ✨ Features
 
@@ -203,24 +201,4 @@ All required environment variables are documented in `.env.example`:
 npm run build
 npm start
 ```
-
-### Deploy to Vercel
-
-```bash
-vercel
-```
-
-Make sure to configure all environment variables in your Vercel project settings.
-
-## 📞 Support
-
-For actual API credentials and configuration, please contact the repository maintainer.
-
-## 📄 License
-
-Private - All rights reserved
-
----
-
-Built with ❤️ using Next.js, React, and TypeScript
 

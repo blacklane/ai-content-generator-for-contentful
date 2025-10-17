@@ -8,7 +8,13 @@ interface StepFiveProps {
   onPublish: () => void;
 }
 
-export default function StepFive({ releaseTitle, selectedComponents, publishing, onBack, onPublish }: StepFiveProps) {
+export default function StepFive({
+  releaseTitle,
+  selectedComponents,
+  publishing,
+  onBack,
+  onPublish,
+}: StepFiveProps) {
   return (
     <div className="card cursor-card p-6 mb-6">
       <div className="flex items-center gap-3 mb-6">
@@ -48,7 +54,11 @@ export default function StepFive({ releaseTitle, selectedComponents, publishing,
       </div>
 
       <div className="flex justify-between pt-6 border-t border-cursor-border">
-        <button onClick={onBack} disabled={publishing} className="btn btn-outline">
+        <button
+          onClick={onBack}
+          disabled={publishing}
+          className="btn btn-outline"
+        >
           ← Back to Upload Configuration
         </button>
         <button
@@ -62,13 +72,10 @@ export default function StepFive({ releaseTitle, selectedComponents, publishing,
               Uploading...
             </>
           ) : (
-            <>
-              📤 Upload to Contentful
-            </>
+            <>📤 Upload to Contentful</>
           )}
         </button>
       </div>
     </div>
   );
 }
-

@@ -8,7 +8,7 @@ const hashedPassword = bcrypt.hashSync(AUTH_PASSWORD, 10);
 
 export async function validateCredentials(
   username: string,
-  password: string
+  password: string,
 ): Promise<boolean> {
   if (username !== AUTH_USERNAME) {
     return false;
@@ -16,4 +16,3 @@ export async function validateCredentials(
 
   return await bcrypt.compare(password, hashedPassword);
 }
-

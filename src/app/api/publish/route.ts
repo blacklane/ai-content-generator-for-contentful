@@ -7,45 +7,39 @@ export async function POST(request: NextRequest) {
     // Verify authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const token = authHeader.substring(7);
     const decoded = verifyToken(token);
-    
+
     if (!decoded) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     const body = await request.json();
-    const { generatedContent, releaseTitle, language, selectedComponents } = body;
+    const { generatedContent, releaseTitle } = body;
 
     if (!generatedContent || !releaseTitle) {
       return NextResponse.json(
         { error: 'generatedContent and releaseTitle are required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const publisher = createContentfulPublisher();
-    
+
     if (!publisher) {
       return NextResponse.json(
         { error: 'Contentful not configured' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     // Publish the page as a release
     const result = await publisher.publishPageAsRelease(
       { generated: generatedContent },
-      releaseTitle
+      releaseTitle,
     );
 
     if (!result.success) {
@@ -54,7 +48,7 @@ export async function POST(request: NextRequest) {
           error: 'Publishing failed',
           message: 'Failed to create page or release in Contentful',
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -78,8 +72,7 @@ export async function POST(request: NextRequest) {
         message: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

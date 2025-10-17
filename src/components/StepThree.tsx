@@ -7,7 +7,12 @@ interface StepThreeProps {
   onNext: () => void;
 }
 
-export default function StepThree({ generatedContent, loading, onBack, onNext }: StepThreeProps) {
+export default function StepThree({
+  generatedContent,
+  loading,
+  onBack,
+  onNext,
+}: StepThreeProps) {
   return (
     <div className="card cursor-card p-6 mb-6">
       <div className="flex items-center gap-3 mb-6">
@@ -15,8 +20,18 @@ export default function StepThree({ generatedContent, loading, onBack, onNext }:
           {loading ? (
             <span className="loading loading-spinner loading-sm text-white"></span>
           ) : (
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           )}
         </div>
@@ -25,7 +40,9 @@ export default function StepThree({ generatedContent, loading, onBack, onNext }:
             {loading ? 'Generating Content...' : 'Generation Preview'}
           </h2>
           <p className="text-sm text-cursor-muted">
-            {loading ? 'Please wait while AI creates your content' : 'Review the generated content'}
+            {loading
+              ? 'Please wait while AI creates your content'
+              : 'Review the generated content'}
           </p>
         </div>
       </div>
@@ -70,4 +87,3 @@ export default function StepThree({ generatedContent, loading, onBack, onNext }:
     </div>
   );
 }
-

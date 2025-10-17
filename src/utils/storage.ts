@@ -31,7 +31,9 @@ export const saveFormDataToStorage = (data: StoredFormData): void => {
 export const loadFormDataFromStorage = (): StoredFormData | null => {
   try {
     const savedData = localStorage.getItem(FORM_DATA_KEY);
-    if (!savedData) return null;
+    if (!savedData) {
+      return null;
+    }
 
     const formData = JSON.parse(savedData);
     return {
@@ -63,7 +65,9 @@ export const saveComponentsToStorage = (data: StoredComponentsData): void => {
 export const loadComponentsFromStorage = (): StoredComponentsData | null => {
   try {
     const savedData = localStorage.getItem(COMPONENTS_KEY);
-    if (!savedData) return null;
+    if (!savedData) {
+      return null;
+    }
 
     const componentsData = JSON.parse(savedData);
     return {

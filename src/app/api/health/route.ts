@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const aiConnected = await testConnection();
-    
+
     let contentfulConnected = false;
     const publisher = createContentfulPublisher();
     if (publisher) {
@@ -30,8 +30,7 @@ export async function GET() {
         message: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

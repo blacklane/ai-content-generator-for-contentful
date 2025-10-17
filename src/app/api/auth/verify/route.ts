@@ -7,10 +7,7 @@ export async function POST(request: NextRequest) {
     const { token } = body;
 
     if (!token) {
-      return NextResponse.json(
-        { error: 'Token is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Token is required' }, { status: 400 });
     }
 
     const decoded = verifyToken(token);
@@ -18,7 +15,7 @@ export async function POST(request: NextRequest) {
     if (!decoded) {
       return NextResponse.json(
         { error: 'Invalid or expired token' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -30,8 +27,7 @@ export async function POST(request: NextRequest) {
     console.error('Token verification error:', error);
     return NextResponse.json(
       { error: 'Verification failed', message: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

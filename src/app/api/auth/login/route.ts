@@ -10,16 +10,16 @@ export async function POST(request: NextRequest) {
     if (!username || !password) {
       return NextResponse.json(
         { error: 'Username and password are required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const isValid = await validateCredentials(username, password);
-    
+
     if (!isValid) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -34,8 +34,7 @@ export async function POST(request: NextRequest) {
     console.error('Login error:', error);
     return NextResponse.json(
       { error: 'Authentication failed', message: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

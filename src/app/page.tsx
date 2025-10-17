@@ -117,7 +117,7 @@ export default function Home() {
       setSystemStatus(
         response.data.status === 'healthy' ? 'healthy' : 'degraded',
       );
-    } catch (error) {
+    } catch {
       setSystemStatus('degraded');
     }
   };
@@ -133,7 +133,7 @@ export default function Home() {
       } else {
         localStorage.removeItem('authToken');
       }
-    } catch (error) {
+    } catch {
       localStorage.removeItem('authToken');
     }
   };

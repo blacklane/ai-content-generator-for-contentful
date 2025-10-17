@@ -30,63 +30,62 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
     <div className="min-h-screen flex items-center justify-center bg-cursor-bg p-6">
       <div className="card cursor-card w-full max-w-md border border-cursor-border">
         <div className="p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-cursor-text mb-2">
-            🤖 AI Page Generator
-          </h1>
-          <p className="text-cursor-muted">Sign in to continue</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-cursor-text">
-              Username
-            </label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="input input-bordered w-full"
-              placeholder="Enter username"
-              required
-            />
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-cursor-text mb-2">
+              🤖 AI Page Generator
+            </h1>
+            <p className="text-cursor-muted">Sign in to continue</p>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-cursor-text">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input input-bordered w-full"
-              placeholder="Enter password"
-              required
-            />
-          </div>
-
-          {error && (
-            <div className="alert alert-error">
-              <span>{error}</span>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-cursor-text">
+                Username
+              </label>
+              <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                className="input input-bordered w-full"
+                placeholder="Enter username"
+                required
+              />
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn w-full bg-cursor-accent hover:bg-cursor-accent/80 text-white"
-          >
-            {loading ? (
-              <span className="loading loading-spinner"></span>
-            ) : (
-              'Sign In'
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-cursor-text">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="input input-bordered w-full"
+                placeholder="Enter password"
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="alert alert-error">
+                <span>{error}</span>
+              </div>
             )}
-          </button>
-        </form>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn w-full bg-cursor-accent hover:bg-cursor-accent/80 text-white"
+            >
+              {loading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </form>
         </div>
       </div>
     </div>
   );
 }
-

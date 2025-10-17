@@ -7,20 +7,14 @@ export async function POST(request: NextRequest) {
     // Verify authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const token = authHeader.substring(7);
     const decoded = verifyToken(token);
-    
+
     if (!decoded) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -36,7 +30,7 @@ export async function POST(request: NextRequest) {
     if (!mainKeywords || !secondaryKeywords) {
       return NextResponse.json(
         { error: 'mainKeywords and secondaryKeywords are required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -47,7 +41,7 @@ export async function POST(request: NextRequest) {
           error: 'AI service unavailable',
           message: 'Could not connect to Blacklane AI endpoint',
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -69,7 +63,7 @@ export async function POST(request: NextRequest) {
     let parsedContent;
     try {
       parsedContent = JSON.parse(aiResponse.content);
-    } catch (parseError) {
+    } catch {
       console.error('❌ Failed to parse AI JSON response');
       parsedContent = { raw: aiResponse.content };
     }
@@ -98,8 +92,7 @@ export async function POST(request: NextRequest) {
         message: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

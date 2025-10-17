@@ -28,14 +28,21 @@ const COMPONENTS = [
   },
 ];
 
-export default function StepTwo({ selectedComponents, onUpdate, onNext, onBack }: StepTwoProps) {
+export default function StepTwo({
+  selectedComponents,
+  onUpdate,
+  onNext,
+  onBack,
+}: StepTwoProps) {
   const toggleComponent = (componentId: string) => {
     // Hero and SEO Text are always selected (required)
-    if (componentId === 'hero' || componentId === 'seoText') return;
+    if (componentId === 'hero' || componentId === 'seoText') {
+      return;
+    }
 
     const isSelected = selectedComponents.includes(componentId);
     const newSelected = isSelected
-      ? selectedComponents.filter((id) => id !== componentId)
+      ? selectedComponents.filter(id => id !== componentId)
       : [...selectedComponents, componentId];
 
     onUpdate(newSelected);
@@ -58,7 +65,7 @@ export default function StepTwo({ selectedComponents, onUpdate, onNext, onBack }
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        {COMPONENTS.map((component) => {
+        {COMPONENTS.map(component => {
           const isSelected = selectedComponents.includes(component.id);
 
           return (
@@ -100,12 +107,21 @@ export default function StepTwo({ selectedComponents, onUpdate, onNext, onBack }
           className="btn bg-cursor-accent hover:bg-cursor-accent/80 text-white"
         >
           Generate Content
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
           </svg>
         </button>
       </div>
     </div>
   );
 }
-
