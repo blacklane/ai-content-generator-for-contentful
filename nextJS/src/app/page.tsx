@@ -8,6 +8,13 @@ import StepFour from '@/components/StepFour';
 import StepOne from '@/components/StepOne';
 import StepThree from '@/components/StepThree';
 import StepTwo from '@/components/StepTwo';
+import {
+  clearStoredData,
+  loadComponentsFromStorage,
+  loadFormDataFromStorage,
+  saveComponentsToStorage,
+  saveFormDataToStorage,
+} from '@/utils/storage';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -22,21 +29,29 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [systemStatus, setSystemStatus] = useState<'healthy' | 'degraded' | 'checking'>('checking');
-  
+  const [systemStatus, setSystemStatus] = useState<
+    'healthy' | 'degraded' | 'checking'
+  >('checking');
+
+  // Flag to prevent saving before initial data is loaded
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const [projectData, setProjectData] = useState<ProjectData>({
     mainKeywords: '',
     secondaryKeywords: '',
     questions: '',
     language: 'en',
   });
-  
-  const [selectedComponents, setSelectedComponents] = useState<string[]>(['hero', 'seoText']);
+
+  const [selectedComponents, setSelectedComponents] = useState<string[]>([
+    'hero',
+    'seoText',
+  ]);
   const [generatedContent, setGeneratedContent] = useState<any>(null);
   const [releaseTitle, setReleaseTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  
+
   // Result modal state
   const [showResultModal, setShowResultModal] = useState(false);
   const [resultModalData, setResultModalData] = useState<{
@@ -59,6 +74,22 @@ export default function Home() {
     }
   }, []);
 
+  // Load saved form data and components on mount
+  useEffect(() => {
+    const savedFormData = loadFormDataFromStorage();
+    if (savedFormData) {
+      setProjectData(savedFormData);
+    }
+
+    const savedComponents = loadComponentsFromStorage();
+    if (savedComponents) {
+      setSelectedComponents(savedComponents.selectedComponents);
+    }
+
+    // Mark as initialized after loading data
+    setIsInitialized(true);
+  }, []);
+
   // Check system health
   useEffect(() => {
     if (isAuthenticated) {
@@ -66,10 +97,26 @@ export default function Home() {
     }
   }, [isAuthenticated]);
 
+  // Auto-save form data to localStorage when it changes (only after initialization)
+  useEffect(() => {
+    if (isInitialized) {
+      saveFormDataToStorage(projectData);
+    }
+  }, [projectData, isInitialized]);
+
+  // Auto-save selected components to localStorage when they change (only after initialization)
+  useEffect(() => {
+    if (isInitialized) {
+      saveComponentsToStorage({ selectedComponents });
+    }
+  }, [selectedComponents, isInitialized]);
+
   const checkHealth = async () => {
     try {
       const response = await axios.get('/api/health');
-      setSystemStatus(response.data.status === 'healthy' ? 'healthy' : 'degraded');
+      setSystemStatus(
+        response.data.status === 'healthy' ? 'healthy' : 'degraded',
+      );
     } catch (error) {
       setSystemStatus('degraded');
     }
@@ -77,7 +124,9 @@ export default function Home() {
 
   const verifyToken = async (authToken: string) => {
     try {
-      const response = await axios.post('/api/auth/verify', { token: authToken });
+      const response = await axios.post('/api/auth/verify', {
+        token: authToken,
+      });
       if (response.data.success) {
         setToken(authToken);
         setIsAuthenticated(true);
@@ -90,7 +139,10 @@ export default function Home() {
   };
 
   const handleLogin = async (username: string, password: string) => {
-    const response = await axios.post('/api/auth/login', { username, password });
+    const response = await axios.post('/api/auth/login', {
+      username,
+      password,
+    });
     if (response.data.success) {
       const newToken = response.data.token;
       setToken(newToken);
@@ -104,7 +156,7 @@ export default function Home() {
   const handleGenerateContent = async () => {
     setLoading(true);
     setCurrentStep(3);
-    
+
     try {
       const response = await axios.post(
         '/api/generate',
@@ -119,9 +171,9 @@ export default function Home() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-      
+
       if (response.data.success) {
         setGeneratedContent(response.data.data.generated);
       }
@@ -136,7 +188,7 @@ export default function Home() {
 
   const handlePublish = async () => {
     setPublishing(true);
-    
+
     try {
       const response = await axios.post(
         '/api/publish',
@@ -150,15 +202,16 @@ export default function Home() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-      
+
       if (response.data.success) {
         // Show success modal
         setResultModalData({
           success: true,
           title: '🎉 Publishing Successful!',
-          message: 'Your content has been successfully uploaded to Contentful as a draft. You can now review and publish it in the Contentful dashboard.',
+          message:
+            'Your content has been successfully uploaded to Contentful as a draft. You can now review and publish it in the Contentful dashboard.',
           contentfulUrl: response.data.data.contentfulUrl,
           details: {
             releaseTitle: response.data.data.releaseTitle,
@@ -174,7 +227,9 @@ export default function Home() {
       setResultModalData({
         success: false,
         title: '❌ Publishing Failed',
-        message: error.response?.data?.message || 'Failed to publish content to Contentful. Please try again.',
+        message:
+          error.response?.data?.message ||
+          'Failed to publish content to Contentful. Please try again.',
       });
       setShowResultModal(true);
     } finally {
@@ -184,9 +239,12 @@ export default function Home() {
 
   const handleCloseResultModal = () => {
     setShowResultModal(false);
-    
+
     // Reset to start only if successful
     if (resultModalData.success) {
+      // Prevent auto-save during reset
+      setIsInitialized(false);
+
       setCurrentStep(1);
       setProjectData({
         mainKeywords: '',
@@ -197,11 +255,24 @@ export default function Home() {
       setSelectedComponents(['hero', 'seoText']);
       setGeneratedContent(null);
       setReleaseTitle('');
+
+      // Clear saved data from localStorage
+      clearStoredData();
+
+      // Re-enable auto-save
+      setIsInitialized(true);
     }
   };
 
   const handleReset = () => {
-    if (confirm('Are you sure you want to reset the session? This will clear all your progress.')) {
+    if (
+      confirm(
+        'Are you sure you want to reset the session? This will clear all your progress.',
+      )
+    ) {
+      // Prevent auto-save during reset
+      setIsInitialized(false);
+
       setCurrentStep(1);
       setProjectData({
         mainKeywords: '',
@@ -212,6 +283,12 @@ export default function Home() {
       setSelectedComponents(['hero', 'seoText']);
       setGeneratedContent(null);
       setReleaseTitle('');
+
+      // Clear saved data from localStorage
+      clearStoredData();
+
+      // Re-enable auto-save
+      setIsInitialized(true);
     }
   };
 
@@ -222,7 +299,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-cursor-bg">
       <Sidebar currentStep={currentStep} systemStatus={systemStatus} />
-      
+
       <div className="lg:ml-64 min-h-screen">
         {/* Top Bar */}
         <div className="border-b border-cursor-border bg-cursor-sidebar/50 backdrop-blur-sm sticky top-0 z-50">
@@ -245,7 +322,7 @@ export default function Home() {
           {currentStep === 1 && (
             <StepOne
               projectData={projectData}
-              onUpdate={(data) => setProjectData({ ...projectData, ...data })}
+              onUpdate={data => setProjectData({ ...projectData, ...data })}
               onNext={() => setCurrentStep(2)}
             />
           )}
@@ -303,4 +380,3 @@ export default function Home() {
     </div>
   );
 }
-
