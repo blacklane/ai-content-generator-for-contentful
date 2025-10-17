@@ -55,7 +55,7 @@ export default function StepFour({ releaseTitle, selectedComponents, onUpdate, o
 
       <div className="space-y-6 mb-8">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-cursor-text">
+          <label className="text-sm font-medium text-cursor-text block">
             Deployment Title *
           </label>
           <input
@@ -63,8 +63,14 @@ export default function StepFour({ releaseTitle, selectedComponents, onUpdate, o
             value={releaseTitle}
             onChange={(e) => onUpdate(e.target.value)}
             placeholder="e.g., Landing Page v1.0 - Premium Service"
-            className="input input-bordered w-full"
+            className="input input-bordered w-full text-base"
+            autoComplete="off"
           />
+          {!releaseTitle && (
+            <p className="text-xs text-cursor-muted mt-1">
+              Enter a descriptive title for your Contentful release
+            </p>
+          )}
         </div>
 
         <div className="p-4 bg-cursor-bg rounded-lg border border-cursor-border">

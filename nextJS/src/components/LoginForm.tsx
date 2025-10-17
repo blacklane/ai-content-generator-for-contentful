@@ -27,8 +27,9 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cursor-bg p-4">
-      <div className="card cursor-card p-8 w-full max-w-md border border-cursor-border">
+    <div className="min-h-screen flex items-center justify-center bg-cursor-bg p-6">
+      <div className="card cursor-card w-full max-w-md border border-cursor-border">
+        <div className="p-8">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-cursor-text mb-2">
             🤖 AI Page Generator
@@ -83,6 +84,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
             )}
           </button>
         </form>
+        </div>
       </div>
     </div>
   );

@@ -24,13 +24,14 @@ const COMPONENTS = [
     id: 'seoText',
     name: 'SEO Text + Image',
     description: 'SEO-optimized content blocks with images',
-    required: false,
+    required: true,
   },
 ];
 
 export default function StepTwo({ selectedComponents, onUpdate, onNext, onBack }: StepTwoProps) {
   const toggleComponent = (componentId: string) => {
-    if (componentId === 'hero') return; // Hero is always selected
+    // Hero and SEO Text are always selected (required)
+    if (componentId === 'hero' || componentId === 'seoText') return;
 
     const isSelected = selectedComponents.includes(componentId);
     const newSelected = isSelected

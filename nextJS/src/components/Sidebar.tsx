@@ -27,7 +27,8 @@ export default function Sidebar({ currentStep, systemStatus }: SidebarProps) {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-full w-64 bg-cursor-sidebar border-r border-cursor-border p-6 z-30 hidden lg:block">
+    <div className="fixed left-0 top-0 h-full w-64 bg-cursor-sidebar border-r border-cursor-border z-30 hidden lg:block">
+      <div className="p-6">
       <div className="mb-8">
         <h3 className="text-sm font-medium text-cursor-text mb-3">Progress</h3>
         <div className="space-y-2">
@@ -58,7 +59,7 @@ export default function Sidebar({ currentStep, systemStatus }: SidebarProps) {
         </div>
       </div>
 
-      <div className="p-3 rounded-lg bg-cursor-bg border border-cursor-border">
+      <div className="p-4 rounded-lg bg-cursor-bg border border-cursor-border">
         <div className="flex items-center gap-2 mb-2">
           <div className={`w-2 h-2 rounded-full ${statusColors[systemStatus]}`}></div>
           <span className="text-sm font-medium text-cursor-text">
@@ -66,6 +67,7 @@ export default function Sidebar({ currentStep, systemStatus }: SidebarProps) {
           </span>
         </div>
         <p className="text-xs text-cursor-muted">{statusText[systemStatus]}</p>
+      </div>
       </div>
     </div>
   );

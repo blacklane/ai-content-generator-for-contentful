@@ -1,6 +1,7 @@
 'use client';
 
 import LoginForm from '@/components/LoginForm';
+import ResultModal from '@/components/ResultModal';
 import Sidebar from '@/components/Sidebar';
 import StepFive from '@/components/StepFive';
 import StepFour from '@/components/StepFour';
@@ -30,11 +31,25 @@ export default function Home() {
     language: 'en',
   });
   
-  const [selectedComponents, setSelectedComponents] = useState<string[]>(['hero']);
+  const [selectedComponents, setSelectedComponents] = useState<string[]>(['hero', 'seoText']);
   const [generatedContent, setGeneratedContent] = useState<any>(null);
   const [releaseTitle, setReleaseTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  
+  // Result modal state
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultModalData, setResultModalData] = useState<{
+    success: boolean;
+    title: string;
+    message: string;
+    contentfulUrl?: string;
+    details?: any;
+  }>({
+    success: false,
+    title: '',
+    message: '',
+  });
 
   // Check authentication on mount
   useEffect(() => {
@@ -139,24 +154,49 @@ export default function Home() {
       );
       
       if (response.data.success) {
-        alert(`✅ Success! Content published to Contentful.\n\nRelease: ${releaseTitle}\nComponents: ${response.data.data.totalComponents}`);
-        // Reset to start
-        setCurrentStep(1);
-        setProjectData({
-          mainKeywords: '',
-          secondaryKeywords: '',
-          questions: '',
-          language: 'en',
+        // Show success modal
+        setResultModalData({
+          success: true,
+          title: '🎉 Publishing Successful!',
+          message: 'Your content has been successfully uploaded to Contentful as a draft. You can now review and publish it in the Contentful dashboard.',
+          contentfulUrl: response.data.data.contentfulUrl,
+          details: {
+            releaseTitle: response.data.data.releaseTitle,
+            totalComponents: response.data.data.totalComponents,
+            releaseId: response.data.data.releaseId,
+          },
         });
-        setSelectedComponents(['hero']);
-        setGeneratedContent(null);
-        setReleaseTitle('');
+        setShowResultModal(true);
       }
     } catch (error: any) {
       console.error('Publishing failed:', error);
-      alert('Publishing failed. Please try again.');
+      // Show error modal
+      setResultModalData({
+        success: false,
+        title: '❌ Publishing Failed',
+        message: error.response?.data?.message || 'Failed to publish content to Contentful. Please try again.',
+      });
+      setShowResultModal(true);
     } finally {
       setPublishing(false);
+    }
+  };
+
+  const handleCloseResultModal = () => {
+    setShowResultModal(false);
+    
+    // Reset to start only if successful
+    if (resultModalData.success) {
+      setCurrentStep(1);
+      setProjectData({
+        mainKeywords: '',
+        secondaryKeywords: '',
+        questions: '',
+        language: 'en',
+      });
+      setSelectedComponents(['hero', 'seoText']);
+      setGeneratedContent(null);
+      setReleaseTitle('');
     }
   };
 
@@ -169,7 +209,7 @@ export default function Home() {
         questions: '',
         language: 'en',
       });
-      setSelectedComponents(['hero']);
+      setSelectedComponents(['hero', 'seoText']);
       setGeneratedContent(null);
       setReleaseTitle('');
     }
@@ -186,7 +226,7 @@ export default function Home() {
       <div className="lg:ml-64 min-h-screen">
         {/* Top Bar */}
         <div className="border-b border-cursor-border bg-cursor-sidebar/50 backdrop-blur-sm sticky top-0 z-50">
-          <div className="px-4 py-2 flex items-center justify-between">
+          <div className="px-6 py-3 flex items-center justify-between">
             <div>
               <h1 className="text-lg font-medium text-cursor-text">
                 AI Page Generator
@@ -201,7 +241,7 @@ export default function Home() {
         </div>
 
         {/* Content Area */}
-        <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+        <div className="p-6 sm:p-8 max-w-5xl mx-auto">
           {currentStep === 1 && (
             <StepOne
               projectData={projectData}
@@ -249,6 +289,17 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* Result Modal */}
+      <ResultModal
+        isOpen={showResultModal}
+        success={resultModalData.success}
+        title={resultModalData.title}
+        message={resultModalData.message}
+        contentfulUrl={resultModalData.contentfulUrl}
+        details={resultModalData.details}
+        onClose={handleCloseResultModal}
+      />
     </div>
   );
 }
