@@ -308,7 +308,7 @@ export default function Home() {
           <div className="px-6 py-3 flex items-center justify-between">
             <div>
               <h1 className="text-lg font-medium text-cursor-text">
-                AI Page Generator
+                Contentful AI Page Generator
               </h1>
             </div>
             <div className="flex items-center gap-2">
@@ -347,13 +347,13 @@ export default function Home() {
                 // Auto-fill deployment title from generated content
                 if (generatedContent) {
                   // Try to extract metaTitle from various possible locations
-                  const metaTitle = 
-                    generatedContent.metaTitle || 
+                  const metaTitle =
+                    generatedContent.metaTitle ||
                     generatedContent.metadata?.metaTitle ||
                     generatedContent.hero?.heading ||
                     generatedContent.seoText?.title ||
                     projectData.mainKeywords;
-                  
+
                   if (metaTitle && !releaseTitle) {
                     setReleaseTitle(metaTitle);
                   }
