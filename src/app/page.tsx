@@ -32,6 +32,10 @@ export default function Home() {
   const [systemStatus, setSystemStatus] = useState<
     'healthy' | 'degraded' | 'checking'
   >('checking');
+  const [serviceDetails, setServiceDetails] = useState<{
+    ai: 'connected' | 'disconnected';
+    contentful: 'connected' | 'disconnected';
+  } | null>(null);
 
   // Flag to prevent saving before initial data is loaded
   const [isInitialized, setIsInitialized] = useState(false);
@@ -117,8 +121,10 @@ export default function Home() {
       setSystemStatus(
         response.data.status === 'healthy' ? 'healthy' : 'degraded',
       );
+      setServiceDetails(response.data.services || null);
     } catch {
       setSystemStatus('degraded');
+      setServiceDetails(null);
     }
   };
 
@@ -300,7 +306,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-cursor-bg">
-      <Sidebar currentStep={currentStep} systemStatus={systemStatus} />
+      <Sidebar
+        currentStep={currentStep}
+        systemStatus={systemStatus}
+        serviceDetails={serviceDetails}
+      />
 
       <div className="lg:ml-64 min-h-screen">
         {/* Top Bar */}
