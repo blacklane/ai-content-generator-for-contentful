@@ -22,12 +22,8 @@ export const getFaqGenerationInstructions = (questions: string): string => {
 };
 
 export const getSeoTextRequirements = (): string => {
-  const positions = COMPONENT_CONFIG.SEO_TEXT_IMAGE_POSITIONS.map(
-    (pos, i) => `${i + 1}st section = "${pos}"`,
-  ).join(', ');
-
   return `- Body copy: minimum ${CONTENT_LIMITS.SEO_TEXT_MIN} characters, maximum ${CONTENT_LIMITS.SEO_TEXT_MAX} characters per seoText section
 - CRITICAL: If seoText is requested, generate EXACTLY ${COMPONENT_CONFIG.SEO_TEXT_SECTIONS_COUNT} seoText sections with unique content
-- CRITICAL: For seoText components, use alternating imagePosition pattern: ${positions} (checkerboard pattern)
+- CRITICAL: For seoText components, use alternating imagePosition pattern (left, right, left, right, etc.) in a checkerboard pattern
 - CRITICAL: For seoText components, do NOT generate imageAltText or assign images - leave these fields empty`;
 };
