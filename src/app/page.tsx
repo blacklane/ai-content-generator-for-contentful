@@ -97,7 +97,16 @@ export default function Home() {
   // Check system health
   useEffect(() => {
     if (isAuthenticated) {
+      // Initial health check
       checkHealth();
+
+      // Set up periodic health checks every 30 seconds
+      const intervalId = setInterval(() => {
+        checkHealth();
+      }, 30000);
+
+      // Clean up interval on unmount or when authentication changes
+      return () => clearInterval(intervalId);
     }
   }, [isAuthenticated]);
 
@@ -117,14 +126,35 @@ export default function Home() {
 
   const checkHealth = async () => {
     try {
-      const response = await axios.get('/api/health');
+      // Add cache-busting timestamp to prevent CloudFront caching
+      const timestamp = new Date().getTime();
+      const response = await axios.get(`/api/health?t=${timestamp}`, {
+        // Force no-cache on the request as well
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+        // Add timeout to prevent hanging
+        timeout: 15000,
+      });
+
       setSystemStatus(
         response.data.status === 'healthy' ? 'healthy' : 'degraded',
       );
       setServiceDetails(response.data.services || null);
-    } catch {
+
+      // Log errors if any
+      if (response.data.errors) {
+        const { ai, contentful } = response.data.errors;
+        if (ai) console.warn('AI Service error:', ai);
+        if (contentful) console.warn('Contentful error:', contentful);
+      }
+    } catch (error: any) {
+      console.error('Health check failed:', error.message);
       setSystemStatus('degraded');
-      setServiceDetails(null);
+      setServiceDetails({
+        ai: 'disconnected',
+        contentful: 'disconnected',
+      });
     }
   };
 
@@ -310,6 +340,7 @@ export default function Home() {
         currentStep={currentStep}
         systemStatus={systemStatus}
         serviceDetails={serviceDetails}
+        onRefreshHealth={checkHealth}
       />
 
       <div className="lg:ml-64 min-h-screen">
