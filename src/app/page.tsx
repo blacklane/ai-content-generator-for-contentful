@@ -16,7 +16,7 @@ import {
   saveFormDataToStorage,
 } from '@/utils/storage';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ProjectData {
   mainKeywords: string;
@@ -94,37 +94,8 @@ export default function Home() {
     setIsInitialized(true);
   }, []);
 
-  // Check system health
-  useEffect(() => {
-    if (isAuthenticated) {
-      // Initial health check
-      checkHealth();
-
-      // Set up periodic health checks every 30 seconds
-      const intervalId = setInterval(() => {
-        checkHealth();
-      }, 30000);
-
-      // Clean up interval on unmount or when authentication changes
-      return () => clearInterval(intervalId);
-    }
-  }, [isAuthenticated]);
-
-  // Auto-save form data to localStorage when it changes (only after initialization)
-  useEffect(() => {
-    if (isInitialized) {
-      saveFormDataToStorage(projectData);
-    }
-  }, [projectData, isInitialized]);
-
-  // Auto-save selected components to localStorage when they change (only after initialization)
-  useEffect(() => {
-    if (isInitialized) {
-      saveComponentsToStorage({ selectedComponents });
-    }
-  }, [selectedComponents, isInitialized]);
-
-  const checkHealth = async () => {
+  // Health check function wrapped in useCallback to maintain stable reference
+  const checkHealth = useCallback(async () => {
     try {
       setSystemStatus('checking');
 
@@ -160,7 +131,37 @@ export default function Home() {
         contentful: 'disconnected',
       });
     }
-  };
+  }, []); // Empty dependencies - only uses stable setState functions
+
+  // Check system health on mount and periodically
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Initial health check
+      checkHealth();
+
+      // Set up periodic health checks every 30 seconds
+      const intervalId = setInterval(() => {
+        checkHealth();
+      }, 30000);
+
+      // Clean up interval on unmount or when authentication changes
+      return () => clearInterval(intervalId);
+    }
+  }, [isAuthenticated, checkHealth]);
+
+  // Auto-save form data to localStorage when it changes (only after initialization)
+  useEffect(() => {
+    if (isInitialized) {
+      saveFormDataToStorage(projectData);
+    }
+  }, [projectData, isInitialized]);
+
+  // Auto-save selected components to localStorage when they change (only after initialization)
+  useEffect(() => {
+    if (isInitialized) {
+      saveComponentsToStorage({ selectedComponents });
+    }
+  }, [selectedComponents, isInitialized]);
 
   const verifyToken = async (authToken: string) => {
     try {

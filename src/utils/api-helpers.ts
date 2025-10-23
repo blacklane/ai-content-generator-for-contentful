@@ -71,8 +71,8 @@ export function setNoCacheHeaders(response: NextResponse): void {
  * return createNoCacheResponse({ status: 'ok' });
  * return createNoCacheResponse({ error: 'Not found' }, { status: 404 });
  */
-export function createNoCacheResponse(
-  data: any,
+export function createNoCacheResponse<T>(
+  data: T,
   init?: ResponseInit,
 ): NextResponse {
   const response = NextResponse.json(data, init);
