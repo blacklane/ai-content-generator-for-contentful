@@ -50,3 +50,7 @@ Thumbs.db
 
 lambda-*.zip
 lambda-deploy
+
+# Ignore all markdown files except README
+*.md
+!README.md
