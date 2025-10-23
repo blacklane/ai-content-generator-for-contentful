@@ -14,6 +14,7 @@ import {
   getHeroRequirements,
   getSeoTextRequirements,
 } from './component-requirements';
+import { COMPONENT_TYPES } from './constants';
 import { getFormattingRequirements } from './formatting-requirements';
 import { getLanguageUrlPatterns } from './language-url-patterns';
 import {
@@ -31,9 +32,6 @@ export interface PromptTemplateParams {
   componentExamples: string;
 }
 
-/**
- * Builds the complete content generation prompt
- */
 export const buildContentGenerationPrompt = (
   params: PromptTemplateParams,
 ): string => {
@@ -47,7 +45,6 @@ export const buildContentGenerationPrompt = (
     componentExamples,
   } = params;
 
-  // Build base instructions
   const baseInstructions = getBaseInstructions(
     mainKeywords,
     secondaryKeywords,
@@ -57,13 +54,10 @@ export const buildContentGenerationPrompt = (
     contextInfo,
   );
 
-  // Build link requirements section
   const linkRequirements = getLinkRequirements(language, mainKeywords);
 
-  // Build language-specific URL patterns
   const urlPatterns = getLanguageUrlPatterns(language);
 
-  // Build JSON structure
   const jsonStructure = getJsonStructure(
     mainKeywords,
     secondaryKeywords,
@@ -71,38 +65,32 @@ export const buildContentGenerationPrompt = (
     componentExamples,
   );
 
-  // Build component-specific requirements
   const componentRequirements: string[] = [];
+  let faqInstructions = '';
 
-  // SEO Text requirements
-  if (contentTypes.includes('seoText')) {
+  if (contentTypes.includes(COMPONENT_TYPES.SEO_TEXT)) {
     componentRequirements.push(getSeoTextRequirements());
   }
 
-  // Hero requirements (always include if hero is present)
-  if (contentTypes.includes('hero')) {
+  if (contentTypes.includes(COMPONENT_TYPES.HERO)) {
     componentRequirements.push(getHeroRequirements());
   }
 
-  // FAQ requirements (only if FAQ is selected)
-  if (contentTypes.includes('faqs')) {
-    componentRequirements.push(getFaqRequirements(questions));
+  if (contentTypes.includes(COMPONENT_TYPES.FAQS)) {
+    componentRequirements.push(getFaqRequirements());
   }
 
-  // Build formatting requirements
   const formattingRequirements = getFormattingRequirements(
     language,
     mainKeywords,
     secondaryKeywords,
   );
 
-  // Build FAQ-specific generation instructions (only if FAQ is selected)
-  const faqInstructions = contentTypes.includes('faqs')
-    ? `
-- For FAQ generation: ${getFaqGenerationInstructions(questions)}`
-    : '';
+  if (contentTypes.includes(COMPONENT_TYPES.FAQS)) {
+    faqInstructions = `
+- For FAQ generation: ${getFaqGenerationInstructions(questions)}`;
+  }
 
-  // Assemble the complete prompt
   return `${baseInstructions}
 
 ${linkRequirements}
@@ -113,3 +101,13 @@ ${jsonStructure}
 
 ${formattingRequirements}${faqInstructions}`;
 };
+
+export {
+  COMPONENT_CONFIG,
+  COMPONENT_TYPES,
+  CONTENT_LIMITS,
+  FAQ_CONFIG,
+  LINK_CONFIG,
+  SEO_LIMITS,
+  TEXT_CASE_EXAMPLES,
+} from './constants';

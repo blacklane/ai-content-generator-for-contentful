@@ -7,14 +7,16 @@
  * - Link formatting examples
  */
 
+import { LINK_CONFIG } from './constants';
+
 export const getLinkRequirements = (
   language: string,
   mainKeywords: string,
 ): string => {
-  return `Links: Include related Blacklane minimum 3 unique links within the text by naturally placing them as anchor text.
+  return `Links: Include related Blacklane minimum ${LINK_CONFIG.MIN_INTERNAL_LINKS} unique links within the text by naturally placing them as anchor text.
 
 CRITICAL LINK REQUIREMENTS:
-- You MUST only use URLs that exist in the Blacklane sitemap. Before including any link, verify it exists at: https://www.blacklane.com/sitemap.xml
+- You MUST only use URLs that exist in the Blacklane sitemap. Before including any link, verify it exists at: ${LINK_CONFIG.SITEMAP_URL}
 - ABSOLUTELY NO DUPLICATE LINKS - each URL can only be used ONCE across all content
 - If you need to reference the same service/location again, use different anchor text but DO NOT repeat the same URL
 

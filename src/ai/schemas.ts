@@ -1,3 +1,4 @@
+import { COMPONENT_CONFIG } from './prompts/constants';
 import { ComponentSchema } from './types';
 
 export const getComponentSchemas = async (
@@ -59,14 +60,13 @@ export const getComponentSchemas = async (
 
   contentTypes.forEach(type => {
     if (type === 'seoText') {
-      // Always generate exactly 3 seoText components with alternating image positions
-      const imagePositions = ['left', 'right', 'left']; // Checkerboard pattern
-      for (let i = 0; i < 3; i++) {
+      // Always generate exactly N seoText components with alternating image positions
+      for (let i = 0; i < COMPONENT_CONFIG.SEO_TEXT_SECTIONS_COUNT; i++) {
         const seoTextComponent = {
           ...schemas.seoText,
           content: {
             ...schemas.seoText.content,
-            imagePosition: imagePositions[i],
+            imagePosition: COMPONENT_CONFIG.SEO_TEXT_IMAGE_POSITIONS[i],
           },
         };
         result.push(seoTextComponent);
@@ -119,15 +119,14 @@ export const getFallbackSchemas = (
         });
         break;
       case 'seoText': {
-        // Always generate exactly 3 seoText components with alternating image positions
-        const imagePositions = ['left', 'right', 'left']; // Checkerboard pattern
-        for (let i = 0; i < 3; i++) {
+        // Always generate exactly N seoText components with alternating image positions
+        for (let i = 0; i < COMPONENT_CONFIG.SEO_TEXT_SECTIONS_COUNT; i++) {
           fallbackSchemas.push({
             type: 'seoText',
             content: {
               title: 'string (10-80 chars)',
               description: 'string (100-1000 chars)',
-              imagePosition: imagePositions[i], // Alternating positions
+              imagePosition: COMPONENT_CONFIG.SEO_TEXT_IMAGE_POSITIONS[i],
             },
           });
         }

@@ -4,6 +4,8 @@
  * Defines the main prompt structure and expected JSON output format
  */
 
+import { COMPONENT_TYPES } from './constants';
+
 export const getBaseInstructions = (
   mainKeywords: string,
   secondaryKeywords: string,
@@ -13,10 +15,10 @@ export const getBaseInstructions = (
   contextInfo: string,
 ): string => {
   const questionsSection =
-    contentTypes.includes('faqs') && questions
+    contentTypes.includes(COMPONENT_TYPES.FAQS) && questions
       ? `
 Questions: ${questions} (These will be prioritized in FAQ generation)`
-      : contentTypes.includes('faqs')
+      : contentTypes.includes(COMPONENT_TYPES.FAQS)
         ? `
 Questions: Not provided (FAQ questions will be AI-generated based on keywords)`
         : '';
