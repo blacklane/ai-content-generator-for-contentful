@@ -1,5 +1,11 @@
 import axios from 'axios';
+import https from 'https';
 import { AIConfig, AIResponse } from './types';
+
+// Allow self-signed certificates for internal AI service
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 interface RequestPayload {
   model: string;
@@ -38,6 +44,7 @@ export const sendAIRequest = async (
         'Content-Type': 'application/json',
       },
       timeout: 30000,
+      httpsAgent,
     },
   );
 
@@ -67,6 +74,7 @@ export const testAIConnection = async (config: AIConfig): Promise<boolean> => {
           'Content-Type': 'application/json',
         },
         timeout: 10000,
+        httpsAgent,
       },
     );
 
