@@ -126,14 +126,17 @@ export default function Home() {
 
   const checkHealth = async () => {
     try {
+      setSystemStatus('checking');
+
       // Add cache-busting timestamp to prevent CloudFront caching
       const timestamp = new Date().getTime();
       const response = await axios.get(`/api/health?t=${timestamp}`, {
         // Force no-cache on the request as well
         headers: {
           'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
         },
-        // Add timeout to prevent hanging
+        // Add timeout to prevent hanging (should be longer than backend timeout)
         timeout: 15000,
       });
 
@@ -148,8 +151,9 @@ export default function Home() {
         if (ai) console.warn('AI Service error:', ai);
         if (contentful) console.warn('Contentful error:', contentful);
       }
-    } catch (error: any) {
-      console.error('Health check failed:', error.message);
+    } catch (error) {
+      const err = error as Error;
+      console.error('Health check failed:', err.message);
       setSystemStatus('degraded');
       setServiceDetails({
         ai: 'disconnected',

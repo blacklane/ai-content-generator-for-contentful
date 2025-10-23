@@ -1,54 +1,51 @@
 import { testConnection } from '@/ai/client';
 import { createContentfulPublisher } from '@/contentful/client';
-import { NextResponse } from 'next/server';
+import { createNoCacheResponse, withTimeout } from '@/utils/api-helpers';
+
+const TIMEOUT_MS = 8000;
 
 export async function GET() {
   try {
     // Test AI connection with timeout
     let aiConnected = false;
-    let aiError = null;
+    let aiError: string | null = null;
+
     try {
-      const aiPromise = testConnection();
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('AI connection timeout')), 8000),
+      aiConnected = await withTimeout(
+        testConnection(),
+        TIMEOUT_MS,
+        'AI connection timeout',
       );
-      aiConnected = (await Promise.race([
-        aiPromise,
-        timeoutPromise,
-      ])) as boolean;
-    } catch (error: any) {
-      aiError = error.message;
-      console.error('AI connection check failed:', error.message);
+    } catch (error) {
+      const err = error as Error;
+      aiError = err.message;
+      console.error('AI connection check failed:', err.message);
     }
 
     // Test Contentful connection with timeout
     let contentfulConnected = false;
-    let contentfulError = null;
+    let contentfulError: string | null = null;
+
     try {
       const publisher = createContentfulPublisher();
       if (publisher) {
-        const contentfulPromise = publisher.testConnection();
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(
-            () => reject(new Error('Contentful connection timeout')),
-            8000,
-          ),
+        contentfulConnected = await withTimeout(
+          publisher.testConnection(),
+          TIMEOUT_MS,
+          'Contentful connection timeout',
         );
-        contentfulConnected = (await Promise.race([
-          contentfulPromise,
-          timeoutPromise,
-        ])) as boolean;
       } else {
         contentfulError = 'Contentful not configured';
       }
-    } catch (error: any) {
-      contentfulError = error.message;
-      console.error('Contentful connection check failed:', error.message);
+    } catch (error) {
+      const err = error as Error;
+      contentfulError = err.message;
+      console.error('Contentful connection check failed:', err.message);
     }
 
     const allHealthy = aiConnected && contentfulConnected;
 
-    const response = NextResponse.json({
+    return createNoCacheResponse({
       status: allHealthy ? 'healthy' : 'degraded',
       services: {
         ai: aiConnected ? 'connected' : 'disconnected',
@@ -60,34 +57,17 @@ export async function GET() {
       },
       timestamp: new Date().toISOString(),
     });
+  } catch (error) {
+    const err = error as Error;
+    console.error('Health check error:', err);
 
-    // Critical: Prevent CloudFront/CDN caching
-    response.headers.set(
-      'Cache-Control',
-      'no-store, no-cache, must-revalidate, proxy-revalidate',
-    );
-    response.headers.set('Expires', '0');
-    response.headers.set('Surrogate-Control', 'no-store');
-
-    return response;
-  } catch (error: any) {
-    console.error('Health check error:', error);
-    const errorResponse = NextResponse.json(
+    return createNoCacheResponse(
       {
         status: 'error',
-        message: error.message,
+        message: err.message,
         timestamp: new Date().toISOString(),
       },
       { status: 500 },
     );
-
-    // Prevent caching of error responses too
-    errorResponse.headers.set(
-      'Cache-Control',
-      'no-store, no-cache, must-revalidate, proxy-revalidate',
-    );
-    errorResponse.headers.set('Expires', '0');
-
-    return errorResponse;
   }
 }
