@@ -16,7 +16,7 @@ import {
   saveFormDataToStorage,
 } from '@/utils/storage';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ProjectData {
   mainKeywords: string;
@@ -94,12 +94,60 @@ export default function Home() {
     setIsInitialized(true);
   }, []);
 
-  // Check system health
+  // Health check function wrapped in useCallback to maintain stable reference
+  const checkHealth = useCallback(async () => {
+    try {
+      setSystemStatus('checking');
+
+      // Add cache-busting timestamp to prevent CloudFront caching
+      const timestamp = new Date().getTime();
+      const response = await axios.get(`/api/health?t=${timestamp}`, {
+        // Force no-cache on the request as well
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+        // Add timeout to prevent hanging (should be longer than backend timeout)
+        timeout: 15000,
+      });
+
+      setSystemStatus(
+        response.data.status === 'healthy' ? 'healthy' : 'degraded',
+      );
+      setServiceDetails(response.data.services || null);
+
+      // Log errors if any
+      if (response.data.errors) {
+        const { ai, contentful } = response.data.errors;
+        if (ai) console.warn('AI Service error:', ai);
+        if (contentful) console.warn('Contentful error:', contentful);
+      }
+    } catch (error) {
+      const err = error as Error;
+      console.error('Health check failed:', err.message);
+      setSystemStatus('degraded');
+      setServiceDetails({
+        ai: 'disconnected',
+        contentful: 'disconnected',
+      });
+    }
+  }, []); // Empty dependencies - only uses stable setState functions
+
+  // Check system health on mount and periodically
   useEffect(() => {
     if (isAuthenticated) {
+      // Initial health check
       checkHealth();
+
+      // Set up periodic health checks every 30 seconds
+      const intervalId = setInterval(() => {
+        checkHealth();
+      }, 30000);
+
+      // Clean up interval on unmount or when authentication changes
+      return () => clearInterval(intervalId);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, checkHealth]);
 
   // Auto-save form data to localStorage when it changes (only after initialization)
   useEffect(() => {
@@ -114,19 +162,6 @@ export default function Home() {
       saveComponentsToStorage({ selectedComponents });
     }
   }, [selectedComponents, isInitialized]);
-
-  const checkHealth = async () => {
-    try {
-      const response = await axios.get('/api/health');
-      setSystemStatus(
-        response.data.status === 'healthy' ? 'healthy' : 'degraded',
-      );
-      setServiceDetails(response.data.services || null);
-    } catch {
-      setSystemStatus('degraded');
-      setServiceDetails(null);
-    }
-  };
 
   const verifyToken = async (authToken: string) => {
     try {
@@ -310,6 +345,7 @@ export default function Home() {
         currentStep={currentStep}
         systemStatus={systemStatus}
         serviceDetails={serviceDetails}
+        onRefreshHealth={checkHealth}
       />
 
       <div className="lg:ml-64 min-h-screen">
