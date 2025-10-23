@@ -1,7 +1,4 @@
-import {
-  BLACKLANE_CONTENT_GENERATION_PROMPT,
-  PromptTemplateParams,
-} from './generation-prompt';
+import { buildContentGenerationPrompt, PromptTemplateParams } from './prompts';
 import { getComponentSchemas, getFallbackSchemas } from './schemas';
 import { ComponentSchema, GenerationParams } from './types';
 
@@ -59,5 +56,5 @@ export const buildPrompt = async (
     componentExamples,
   };
 
-  return BLACKLANE_CONTENT_GENERATION_PROMPT(promptParams);
+  return buildContentGenerationPrompt(promptParams);
 };
